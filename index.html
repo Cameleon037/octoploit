@@ -1,24 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="green" data-mode="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Octoploit">
-  <meta name="description" content="Octoploit — showcase site.">
-  <title>Octoploit</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <meta name="description" content="Octoploit — software development and offensive security. We build it, we break it, it ships harder.">
+  <meta name="theme-color" content="#0b0d0a">
+  <title>Octoploit — Build. Break. Harden.</title>
+  <script>
+    document.documentElement.dataset.theme = localStorage.getItem("octoploit-theme-v2") || "green";
+    document.documentElement.dataset.mode = localStorage.getItem("octoploit-mode-v2") || "dark";
+    document.documentElement.lang = localStorage.getItem("octoploit-lang-v2") || ((navigator.language || "en").toLowerCase().startsWith("fr") ? "fr" : "en");
+  </script>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon_green.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-  <main class="hero">
-    <img class="logo" src="assets/logo.svg" alt="Octoploit" width="360" height="124">
-    <p class="tagline">It works. More soon.</p>
-    <p class="contact">
-      <a href="mailto:leo.g38200@gmail.com">leo.g38200@gmail.com</a>
-    </p>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="i-term" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path d="M0 0h16v2H0zM0 14h16v2H0zM0 2h2v12H0zM14 2h2v12h-2zM4 5h2v2H4zM6 7h2v2H6zM4 9h2v2H4zM8 9h4v2H8z"/>
+    </symbol>
+    <symbol id="i-link" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path d="M2 6h4v4H2zM10 6h4v4h-4zM6 7h4v2H6z"/>
+    </symbol>
+    <symbol id="i-gear" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path d="M6 4h4v2H6zM6 10h4v2H6zM4 6h2v4H4zM10 6h2v4h-2zM7 0h2v2H7zM7 14h2v2H7zM0 7h2v2H0zM14 7h2v2h-2zM3 3h2v2H3zM11 3h2v2h-2zM3 11h2v2H3zM11 11h2v2h-2z"/>
+    </symbol>
+    <symbol id="i-bug" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path d="M4 1h2v2H4zM10 1h2v2h-2zM6 3h4v2H6zM5 5h6v7H5zM1 5h3v2H1zM12 5h3v2h-3zM1 8h3v2H1zM12 8h3v2h-3zM2 11h3v2H2zM11 11h3v2h-3z"/>
+    </symbol>
+    <symbol id="i-target" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path d="M6 3h4v2H6zM6 11h4v2H6zM3 6h2v4H3zM11 6h2v4h-2zM7 7h2v2H7zM7 0h2v3H7zM7 13h2v3H7zM0 7h3v2H0zM13 7h3v2h-3z"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path d="M4 1h8v2H4zM3 3h2v9H3zM11 3h2v9h-2zM5 12h6v2H5zM7 14h2v2H7zM4 7h2v2H4zM6 9h2v2H6zM8 7h2v2H8zM10 5h2v2h-2z"/>
+    </symbol>
+  </svg>
+
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <header class="top">
+    <a class="brand" href="#top" aria-label="Octoploit home">
+      <img id="brand-logo" src="assets/logo_green_dark.svg" alt="Octoploit" width="220" height="76">
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#services" data-i18n="nav_services">Services</a>
+      <a href="#approach" data-i18n="nav_approach">Approach</a>
+      <a href="#contact" data-i18n="nav_contact">Contact</a>
+    </nav>
+    <div class="modes">
+      <div class="mode" role="group" aria-label="Site theme">
+        <button class="mode-btn" data-mode="green" aria-pressed="true">DEV</button>
+        <button class="mode-btn" data-mode="red" aria-pressed="false">OFFSEC</button>
+      </div>
+      <div class="mode" role="group" aria-label="Color scheme">
+        <button class="mode-btn" data-light="light" aria-pressed="true">LIGHT</button>
+        <button class="mode-btn" data-light="dark" aria-pressed="false">DARK</button>
+      </div>
+      <div class="mode" role="group" aria-label="Language">
+        <button class="mode-btn" data-lang="en" aria-pressed="true">EN</button>
+        <button class="mode-btn" data-lang="fr" aria-pressed="false">FR</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="dither d1" aria-hidden="true"></div>
+      <div class="dither d2" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow" data-i18n="eyebrow">// SOFTWARE &amp; SECURITY STUDIO</p>
+        <h1 class="display">
+          <span class="line" data-i18n="h1a">WE BUILD IT.</span>
+          <span class="line accent" data-i18n="h1b">WE BREAK IT.</span>
+          <span class="line small" data-i18n="h1c">IT SHIPS HARDER.</span>
+        </h1>
+        <p class="lede" data-i18n="lede">Octoploit is a two-headed studio: engineers who ship software,
+          attackers who tear it apart. Same team, both sides of the keyboard.</p>
+        <div class="term" role="img" data-i18n-aria="aria_term" aria-label="terminal prompt: ./octoploit --build --break --harden">
+          <div class="term-bar"><i></i><i></i><i></i><span>octoploit — zsh</span></div>
+          <div class="term-body"><span class="term-user">octo@octoploit:~$</span> <span id="term-cmd"></span><span class="cursor">▮</span></div>
+        </div>
+        <div class="cta">
+          <a class="btn" href="#services" data-i18n="cta_services">SEE SERVICES</a>
+          <a class="btn ghost" href="#contact" data-i18n="cta_contact">GET IN TOUCH</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="services">
+      <h2 class="sec-label"><span class="tick" aria-hidden="true"></span><span data-i18n="sec_services">SERVICES</span></h2>
+      <p class="sec-note" data-i18n="sec_note">Two tracks. One eight-armed team.</p>
+
+      <div class="tracks">
+        <div class="track track--dev">
+          <p class="track-tag" data-i18n="trk01">TRACK 01</p>
+          <h3 class="track-title" data-i18n="dev_title">DEVELOPMENT</h3>
+          <p class="track-desc" data-i18n="dev_desc">From whiteboard to production — built with an attacker's paranoia baked in.</p>
+          <ul class="cards">
+            <li class="card">
+              <svg class="icon" aria-hidden="true"><use href="#i-term"/></svg>
+              <h4 data-i18n="dev_c1t">Web &amp; app development</h4>
+              <p data-i18n="dev_c1d">Frontends, backends and full products. Typed, tested, boring-in-the-good-way stacks.</p>
+            </li>
+            <li class="card">
+              <svg class="icon" aria-hidden="true"><use href="#i-link"/></svg>
+              <h4 data-i18n="dev_c2t">APIs &amp; integrations</h4>
+              <p data-i18n="dev_c2d">REST/GraphQL APIs, webhooks, third-party glue — documented and hardened at the edges.</p>
+            </li>
+            <li class="card">
+              <svg class="icon" aria-hidden="true"><use href="#i-gear"/></svg>
+              <h4 data-i18n="dev_c3t">Automation &amp; tooling</h4>
+              <p data-i18n="dev_c3d">CI/CD, internal tools, scripts that delete themselves. Machines do the boring half.</p>
+            </li>
+          </ul>
+        </div>
+
+        <div class="track track--offsec">
+          <p class="track-tag" data-i18n="trk02">TRACK 02</p>
+          <h3 class="track-title" data-i18n="off_title">OFFENSIVE SECURITY</h3>
+          <p class="track-desc" data-i18n="off_desc">Find the hole before someone else sells it for you.</p>
+          <ul class="cards">
+            <li class="card">
+              <svg class="icon" aria-hidden="true"><use href="#i-bug"/></svg>
+              <h4 data-i18n="off_c1t">Penetration testing</h4>
+              <p data-i18n="off_c1d">Web apps, APIs and networks. Real exploits, reproducible steps, no PDF-only fearware.</p>
+            </li>
+            <li class="card">
+              <svg class="icon" aria-hidden="true"><use href="#i-target"/></svg>
+              <h4 data-i18n="off_c2t">Red team &amp; attack simulation</h4>
+              <p data-i18n="off_c2d">Adversary emulation against your real defenses — from phishing to domain takeover paths.</p>
+            </li>
+            <li class="card">
+              <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+              <h4 data-i18n="off_c3t">Secure code review</h4>
+              <p data-i18n="off_c3d">Line-by-line review by people who also write production code. Fixes included, not demanded.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="approach">
+      <h2 class="sec-label"><span class="tick" aria-hidden="true"></span><span data-i18n="sec_approach">APPROACH</span></h2>
+      <p class="approach-punch" data-i18n="punch">Builders who think like breakers. Breakers who know how it was assembled.</p>
+      <ol class="steps">
+        <li class="step"><span class="step-n">01</span><h4 data-i18n="s1t">SCOPE</h4><p data-i18n="s1d">What exists, what matters, what hurts. Written down before a single packet moves.</p></li>
+        <li class="step"><span class="step-n">02</span><h4 data-i18n="s2t">BUILD / BREACH</h4><p data-i18n="s2d">Ship the feature or attack it. Same standards: reproducible, measured, no theater.</p></li>
+        <li class="step"><span class="step-n">03</span><h4 data-i18n="s3t">HARDEN</h4><p data-i18n="s3d">Findings become fixes become tests. The next version remembers the last attack.</p></li>
+      </ol>
+    </section>
+
+    <section id="contact">
+      <h2 class="sec-label"><span class="tick" aria-hidden="true"></span><span data-i18n="sec_contact">CONTACT</span></h2>
+      <div class="contact-block">
+        <p class="contact-line" data-i18n="contact_line">Got a product to build or a system to break?</p>
+        <a class="btn big" href="mailto:leo.g38200@gmail.com">leo.g38200@gmail.com</a>
+      </div>
+    </section>
   </main>
+
   <footer>
-    <p>&copy; 2026 Octoploit</p>
+    <p>© 2026 Octoploit — <span class="fx-dev" data-i18n="f_build">build</span> · <span class="fx-offsec" data-i18n="f_break">break</span> · <span data-i18n="f_harden">harden</span></p>
   </footer>
+
+  <script src="assets/main.js"></script>
 </body>
 </html>
