@@ -4,11 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Octoploit">
-  <meta name="description" content="Octoploit — software development and offensive security. We build it, we break it, it ships harder.">
+  <meta name="description" content="Octoploit — software development, penetration testing & red team. We build it, we break it, it ships harder.">
   <meta name="theme-color" content="#0b0d0a">
   <title>Octoploit — Build. Break. Harden.</title>
   <script>
-    document.documentElement.dataset.theme = localStorage.getItem("octoploit-theme-v2") || "green";
     document.documentElement.dataset.mode = localStorage.getItem("octoploit-mode-v2") || "dark";
     document.documentElement.lang = localStorage.getItem("octoploit-lang-v2") || ((navigator.language || "en").toLowerCase().startsWith("fr") ? "fr" : "en");
   </script>
@@ -38,27 +37,62 @@
     <symbol id="i-shield" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <path d="M4 1h8v2H4zM3 3h2v9H3zM11 3h2v9h-2zM5 12h6v2H5zM7 14h2v2H7zM4 7h2v2H4zM6 9h2v2H6zM8 7h2v2H8zM10 5h2v2h-2z"/>
     </symbol>
+    <symbol id="i-up" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path d="M7 0h2v2H7zM5 2h2v2H5zM9 2h2v2H9zM3 4h2v2H3zM11 4h2v2h-2zM7 6h2v9H7z"/>
+    </symbol>
+    <symbol id="i-caret" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path d="M2 3h2v2H2zM12 3h2v2h-2zM4 5h2v2H4zM10 5h2v2h-2zM6 7h4v2H6z"/>
+    </symbol>
+    <symbol id="i-linkedin" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path d="M2 2h2v2H2zM2 5h2v9H2zM6 5h2v9H6zM8 4h2v2H8zM10 4h2v2h-2zM10 6h2v8h-2z"/>
+    </symbol>
   </svg>
 
   <canvas id="fx" aria-hidden="true"></canvas>
 
-  <header class="top">
+  <header class="top" id="top">
     <a class="brand" href="#top" aria-label="Octoploit home">
-      <img id="brand-logo" src="assets/logo_green_dark.svg" alt="Octoploit" width="220" height="76">
+      <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280.63 96.56" role="img" aria-label="Octoploit">
+        <defs>
+          <linearGradient id="logo-grad" gradientUnits="userSpaceOnUse" x1="163.78" y1="0" x2="280.63" y2="0">
+            <stop class="logo-g1" offset="0"/>
+            <stop class="logo-g2" offset="1"/>
+          </linearGradient>
+        </defs>
+        <path class="logo-ink" d="M30.37,48.77c0-10.7,8.2-18.48,18.81-18.48s18.71,7.59,18.71,18.48-8.15,18.29-18.62,18.29c-11.03,0-18.9-7.73-18.9-18.29ZM62.14,48.86c0-7.78-5.75-13.39-12.96-13.39-7.64,0-13.06,5.89-13.06,13.39s5.47,13.1,13.1,13.1,12.92-5.99,12.92-13.1Z"/>
+        <path class="logo-ink" d="M67.48,48.45c0-10.65,8.01-18.76,18.71-18.76,3.96,0,7.16,1.04,10.46,3.3v6.22l-.09.05c-3.02-2.97-6.36-4.38-10.28-4.38-7.4,0-13.01,5.7-13.01,13.39s5.7,12.96,12.87,12.96c3.91,0,7.68-1.7,10.51-4.57h.05v6.41c-3.16,2.22-6.88,3.39-10.65,3.39-10.75,0-18.57-7.82-18.57-18Z"/>
+        <path class="logo-ink" d="M49.34,30.4c-10.61,0-18.9-8.11-18.9-18.38,0-4.52,1.32-8.11,4.29-11.92h3.82v.05c-3.44,3.35-5.14,7.31-5.14,11.74,0,8.67,6.79,15.22,15.79,15.22,8.44,0,15.04-6.74,15.04-15.08,0-4.38-1.89-8.72-5.14-11.92v-.09h3.77c2.83,3.63,4.34,7.87,4.34,12.11,0,10.28-7.82,18.29-17.86,18.29Z"/>
+        <path class="logo-ink" d="M48.29,66.16c10.61,0,18.9,8.11,18.9,18.38,0,4.53-1.32,8.11-4.29,11.92h-3.82v-.05c3.44-3.35,5.14-7.31,5.14-11.74,0-8.67-6.79-15.22-15.79-15.22-8.44,0-15.04,6.74-15.04,15.08,0,4.38,1.89,8.72,5.14,11.92v.09h-3.77c-2.83-3.63-4.34-7.87-4.34-12.11,0-10.27,7.82-18.29,17.86-18.29Z"/>
+        <path class="logo-ink" d="M30.4,48.08c0,10.61-8.11,18.9-18.38,18.9-4.53,0-8.11-1.32-11.92-4.29v-3.82h.05c3.35,3.44,7.31,5.14,11.74,5.14,8.67,0,15.22-6.79,15.22-15.79,0-8.44-6.74-15.04-15.08-15.04-4.38,0-8.72,1.89-11.92,5.14h-.09v-3.77c3.63-2.83,7.87-4.34,12.11-4.34,10.27,0,18.29,7.82,18.29,17.86Z"/>
+        <path class="logo-ink" d="M107.27,35.07h-8.01v-4.76h21.49v4.76h-8.06v30.78h-5.42v-30.78Z"/>
+        <path class="logo-ink" d="M121.03,48.17c0-10.7,8.2-18.48,18.81-18.48s18.71,7.59,18.71,18.48-8.15,18.29-18.62,18.29c-11.03,0-18.9-7.73-18.9-18.29ZM152.8,48.27c0-7.78-5.75-13.39-12.96-13.39-7.64,0-13.06,5.89-13.06,13.39s5.47,13.1,13.1,13.1,12.92-5.99,12.92-13.1Z"/>
+        <path class="logo-grad" d="M163.78,30.31h11.27c6.27,0,10.51,4.1,10.51,10.09,0,6.55-4.01,10.75-10.42,10.75h-5.94v14.71h-5.42V30.31ZM173.96,46.62c3.58,0,5.94-2.26,5.94-5.94s-2.36-5.84-5.89-5.84h-4.81v11.78h4.76Z"/>
+        <path class="logo-grad" d="M190.32,30.31h5.42v30.78h9.99v4.76h-15.41V30.31Z"/>
+        <path class="logo-grad" d="M206.72,48.17c0-10.7,8.2-18.48,18.81-18.48s18.71,7.59,18.71,18.48-8.15,18.29-18.62,18.29c-11.03,0-18.9-7.73-18.9-18.29ZM238.49,48.27c0-7.78-5.75-13.39-12.96-13.39-7.64,0-13.06,5.89-13.06,13.39s5.47,13.1,13.1,13.1,12.92-5.99,12.92-13.1Z"/>
+        <path class="logo-grad" d="M254.9,30.31v35.54h-5.42V30.31h5.42Z"/>
+        <path class="logo-grad" d="M267.15,35.07h-8.01v-4.76h21.49v4.76h-8.06v30.78h-5.42v-30.78Z"/>
+      </svg>
     </a>
     <nav class="nav" aria-label="Main">
-      <a href="#services" data-i18n="nav_services">Services</a>
-      <a href="#approach" data-i18n="nav_approach">Approach</a>
+      <div class="nav-item">
+        <button class="nav-link" type="button" id="nav-services" aria-expanded="false" aria-controls="nav-drop">
+          <span data-i18n="nav_services">Services</span>
+          <svg class="icon nav-caret" aria-hidden="true"><use href="#i-caret"/></svg>
+        </button>
+        <div class="nav-drop" id="nav-drop">
+          <a class="drop-item track--dev" href="#dev"><span class="drop-mark" aria-hidden="true"></span><span data-i18n="drop_dev">Development</span></a>
+          <a class="drop-item track--offsec" href="#offsec"><span class="drop-mark" aria-hidden="true"></span><span data-i18n="drop_offsec">Penetration testing &amp; red team</span></a>
+        </div>
+      </div>
+      <a href="#about" data-i18n="nav_about">Profile</a>
       <a href="#contact" data-i18n="nav_contact">Contact</a>
     </nav>
     <div class="modes">
-      <div class="mode" role="group" aria-label="Site theme">
-        <button class="mode-btn" data-mode="green" aria-pressed="true">DEV</button>
-        <button class="mode-btn" data-mode="red" aria-pressed="false">OFFSEC</button>
-      </div>
       <div class="mode" role="group" aria-label="Color scheme">
-        <button class="mode-btn" data-light="light" aria-pressed="true">LIGHT</button>
-        <button class="mode-btn" data-light="dark" aria-pressed="false">DARK</button>
+        <!-- the default mode is dark, so the markup ships it already pressed:
+             before main.js runs the control must not claim LIGHT is selected -->
+        <button class="mode-btn" data-light="light" aria-pressed="false">LIGHT</button>
+        <button class="mode-btn is-on" data-light="dark" aria-pressed="true">DARK</button>
       </div>
       <div class="mode" role="group" aria-label="Language">
         <button class="mode-btn" data-lang="en" aria-pressed="true">EN</button>
@@ -67,7 +101,7 @@
     </div>
   </header>
 
-  <main id="top">
+  <main>
     <section class="hero">
       <div class="dither d1" aria-hidden="true"></div>
       <div class="dither d2" aria-hidden="true"></div>
@@ -75,97 +109,108 @@
         <p class="eyebrow" data-i18n="eyebrow">// SOFTWARE &amp; SECURITY STUDIO</p>
         <h1 class="display">
           <span class="line" data-i18n="h1a">WE BUILD IT.</span>
-          <span class="line accent" data-i18n="h1b">WE BREAK IT.</span>
-          <span class="line small" data-i18n="h1c">IT SHIPS HARDER.</span>
+          <span class="line accent" data-i18n="h1b">WE MAKE IT UNBREAKABLE.</span>
         </h1>
-        <p class="lede" data-i18n="lede">Octoploit is a two-headed studio: engineers who ship software,
-          attackers who tear it apart. Same team, both sides of the keyboard.</p>
-        <div class="term" role="img" data-i18n-aria="aria_term" aria-label="terminal prompt: ./octoploit --build --break --harden">
+        <p class="lede" data-i18n="lede">Octoploit runs two tracks: an engineer who builds software,
+          a security engineer who hardens it — before anyone else gets the chance to find a breach.
+          Both sides of the keyboard.</p>
+        <div class="term" role="img" data-i18n-aria="aria_term" aria-label="terminal prompt: ./octoploit --build --harden">
           <div class="term-bar"><i></i><i></i><i></i><span>octoploit — zsh</span></div>
           <div class="term-body"><span class="term-user">octo@octoploit:~$</span> <span id="term-cmd"></span><span class="cursor">▮</span></div>
         </div>
         <div class="cta">
-          <a class="btn" href="#services" data-i18n="cta_services">SEE SERVICES</a>
+          <a class="btn" href="#dev" data-i18n="cta_tracks">SEE THE TRACKS</a>
           <a class="btn ghost" href="#contact" data-i18n="cta_contact">GET IN TOUCH</a>
         </div>
       </div>
     </section>
 
-    <section id="services">
-      <h2 class="sec-label"><span class="tick" aria-hidden="true"></span><span data-i18n="sec_services">SERVICES</span></h2>
-      <p class="sec-note" data-i18n="sec_note">Two tracks. One eight-armed team.</p>
-
-      <div class="tracks">
-        <div class="track track--dev">
-          <p class="track-tag" data-i18n="trk01">TRACK 01</p>
-          <h3 class="track-title" data-i18n="dev_title">DEVELOPMENT</h3>
-          <p class="track-desc" data-i18n="dev_desc">From whiteboard to production — built with an attacker's paranoia baked in.</p>
-          <ul class="cards">
-            <li class="card">
-              <svg class="icon" aria-hidden="true"><use href="#i-term"/></svg>
-              <h4 data-i18n="dev_c1t">Web &amp; app development</h4>
-              <p data-i18n="dev_c1d">Frontends, backends and full products. Typed, tested, boring-in-the-good-way stacks.</p>
-            </li>
-            <li class="card">
-              <svg class="icon" aria-hidden="true"><use href="#i-link"/></svg>
-              <h4 data-i18n="dev_c2t">APIs &amp; integrations</h4>
-              <p data-i18n="dev_c2d">REST/GraphQL APIs, webhooks, third-party glue — documented and hardened at the edges.</p>
-            </li>
-            <li class="card">
-              <svg class="icon" aria-hidden="true"><use href="#i-gear"/></svg>
-              <h4 data-i18n="dev_c3t">Automation &amp; tooling</h4>
-              <p data-i18n="dev_c3d">CI/CD, internal tools, scripts that delete themselves. Machines do the boring half.</p>
-            </li>
-          </ul>
-        </div>
-
-        <div class="track track--offsec">
-          <p class="track-tag" data-i18n="trk02">TRACK 02</p>
-          <h3 class="track-title" data-i18n="off_title">OFFENSIVE SECURITY</h3>
-          <p class="track-desc" data-i18n="off_desc">Find the hole before someone else sells it for you.</p>
-          <ul class="cards">
-            <li class="card">
-              <svg class="icon" aria-hidden="true"><use href="#i-bug"/></svg>
-              <h4 data-i18n="off_c1t">Penetration testing</h4>
-              <p data-i18n="off_c1d">Web apps, APIs and networks. Real exploits, reproducible steps, no PDF-only fearware.</p>
-            </li>
-            <li class="card">
-              <svg class="icon" aria-hidden="true"><use href="#i-target"/></svg>
-              <h4 data-i18n="off_c2t">Red team &amp; attack simulation</h4>
-              <p data-i18n="off_c2d">Adversary emulation against your real defenses — from phishing to domain takeover paths.</p>
-            </li>
-            <li class="card">
-              <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
-              <h4 data-i18n="off_c3t">Secure code review</h4>
-              <p data-i18n="off_c3d">Line-by-line review by people who also write production code. Fixes included, not demanded.</p>
-            </li>
-          </ul>
-        </div>
-      </div>
+    <section id="dev" class="track--dev">
+      <p class="track-tag" data-i18n="trk01">TRACK 01</p>
+      <h2 class="sec-label" data-i18n="sec_dev">DEVELOPMENT</h2>
+      <p class="sec-note" data-i18n="dev_desc">From whiteboard to production — built with robustness in mind.</p>
+      <ul class="cards">
+        <li class="card">
+          <svg class="icon" aria-hidden="true"><use href="#i-term"/></svg>
+          <h4 data-i18n="dev_c1t">Web &amp; app development</h4>
+          <p data-i18n="dev_c1d">Frontends, backends and full products. Typed, tested, boring-in-the-good-way stacks.</p>
+        </li>
+        <li class="card">
+          <svg class="icon" aria-hidden="true"><use href="#i-link"/></svg>
+          <h4 data-i18n="dev_c2t">APIs &amp; integrations</h4>
+          <p data-i18n="dev_c2d">REST/GraphQL APIs, webhooks, third-party glue — documented and hardened at the edges.</p>
+        </li>
+        <li class="card">
+          <svg class="icon" aria-hidden="true"><use href="#i-gear"/></svg>
+          <h4 data-i18n="dev_c3t">Automation &amp; tooling</h4>
+          <p data-i18n="dev_c3d">CI/CD, internal tools, scripts that delete themselves. Machines do the boring half.</p>
+        </li>
+      </ul>
     </section>
 
-    <section id="approach">
-      <h2 class="sec-label"><span class="tick" aria-hidden="true"></span><span data-i18n="sec_approach">APPROACH</span></h2>
-      <p class="approach-punch" data-i18n="punch">Builders who think like breakers. Breakers who know how it was assembled.</p>
-      <ol class="steps">
-        <li class="step"><span class="step-n">01</span><h4 data-i18n="s1t">SCOPE</h4><p data-i18n="s1d">What exists, what matters, what hurts. Written down before a single packet moves.</p></li>
-        <li class="step"><span class="step-n">02</span><h4 data-i18n="s2t">BUILD / BREACH</h4><p data-i18n="s2d">Ship the feature or attack it. Same standards: reproducible, measured, no theater.</p></li>
-        <li class="step"><span class="step-n">03</span><h4 data-i18n="s3t">HARDEN</h4><p data-i18n="s3d">Findings become fixes become tests. The next version remembers the last attack.</p></li>
-      </ol>
+    <section id="offsec" class="track--offsec">
+      <p class="track-tag" data-i18n="trk02">TRACK 02</p>
+      <h2 class="sec-label" data-i18n="sec_off">PENETRATION TESTING &amp; RED TEAM</h2>
+      <p class="sec-note" data-i18n="off_desc">Know your real exposure before an incident does.</p>
+      <ul class="cards">
+        <li class="card">
+          <svg class="icon" aria-hidden="true"><use href="#i-bug"/></svg>
+          <h4 data-i18n="off_c1t">Penetration testing</h4>
+          <p data-i18n="off_c1d">Web apps, APIs, networks. Proof over theory: working exploits, prioritized fixes, and a retest to confirm they hold.</p>
+        </li>
+        <li class="card">
+          <svg class="icon" aria-hidden="true"><use href="#i-target"/></svg>
+          <h4 data-i18n="off_c2t">Red team &amp; attack simulation</h4>
+          <p data-i18n="off_c2d">A sanctioned simulation of a real intruder, run transparently with your team: same playbook, no real damage.</p>
+        </li>
+        <li class="card">
+          <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+          <h4 data-i18n="off_c3t">Secure code review</h4>
+          <p data-i18n="off_c3d">Line-by-line review by people who also write production code. Fixes included, not demanded.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="about">
+      <h2 class="sec-label" data-i18n="sec_about">WHO I AM</h2>
+      <p class="sec-note" data-i18n="about_punch">Ten years actively on the keyboard.</p>
+      <dl class="creds">
+        <div class="cred">
+          <dt data-i18n="cred_certs">CERTIFICATIONS</dt>
+          <dd class="cred-chips"><a href="https://www.offsec.com/courses/pen-200/" target="_blank" rel="noopener">OSCP</a><a href="https://www.zeropointsecurity.co.uk/course/red-team-ops" target="_blank" rel="noopener">CRTO</a><a href="https://www.giac.org/certifications/exploit-researcher-advanced-penetration-tester-gxpn" target="_blank" rel="noopener">GXPN</a></dd>
+          <dd class="cred-sub" data-i18n="certs_sub">Offensive track: pentest, red team, exploit development</dd>
+        </div>
+        <div class="cred">
+          <dt data-i18n="cred_edu">EDUCATION</dt>
+          <dd class="cred-main" data-i18n="edu_val">Double engineering degree — ENAC &amp; ENSEEIHT, cybersecurity &amp; computer systems</dd>
+        </div>
+        <div class="cred">
+          <dt data-i18n="cred_exp">EXPERIENCE</dt>
+          <dd class="cred-main" data-i18n="exp_val">10 years across development and cybersecurity</dd>
+        </div>
+        <div class="cred">
+          <dt data-i18n="cred_link">LINKEDIN</dt>
+          <dd class="cred-main"><a class="social-link" href="https://www.linkedin.com/in/l%C3%A9o-georget-3a5335116/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg></a></dd>
+        </div>
+      </dl>
     </section>
 
     <section id="contact">
-      <h2 class="sec-label"><span class="tick" aria-hidden="true"></span><span data-i18n="sec_contact">CONTACT</span></h2>
+      <h2 class="sec-label" data-i18n="sec_contact">CONTACT</h2>
       <div class="contact-block">
-        <p class="contact-line" data-i18n="contact_line">Got a product to build or a system to break?</p>
-        <a class="btn big" href="mailto:leo.g38200@gmail.com">leo.g38200@gmail.com</a>
+        <p class="contact-line" data-i18n="contact_line">A tool to build — or a system to harden?</p>
+        <a class="btn big" href="mailto:contact@octoploit.com">contact@octoploit.com</a>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>© 2026 Octoploit — <span class="fx-dev" data-i18n="f_build">build</span> · <span class="fx-offsec" data-i18n="f_break">break</span> · <span data-i18n="f_harden">harden</span></p>
+    <p>© 2026 Octoploit — <span class="fx-dev" data-i18n="f_build">build</span><span data-i18n="f_sep1"> · </span><span class="fx-offsec" data-i18n="f_harden">harden</span></p>
   </footer>
+
+  <a class="to-top" href="#top" data-i18n-aria="top_aria" aria-label="Back to top">
+    <svg class="icon" aria-hidden="true"><use href="#i-up"/></svg>
+  </a>
 
   <script src="assets/main.js"></script>
 </body>

@@ -13,6 +13,33 @@
   /* fixed duality colors (independent of theme) */
   --dev: #007a1f;
   --offsec: #a30000;
+  /* the diagonal hatch every interactive pixel chip wears when it is live */
+  --hatch: repeating-linear-gradient(45deg, var(--soft) 0 2px, transparent 2px 6px);
+  /* wordmark ink: its own value, it is not --ink in dark mode */
+  --logo-ink: #1d1d1b;
+  /* pixel-font rungs for controls and chips: fixed sizes, outside the 1.6 text
+     ladder, because the chip's border and shadow do the sizing */
+  --fp-chip: 0.625rem;
+  --fp-micro: 0.5625rem;
+  /* kept in sync with the real bar heights by main.js */
+  --header-h: 76px;
+  --footer-h: 57px;
+  /* one content column for every section: inline padding centres it, so the
+     column edge stays aligned with each section's own text */
+  --measure: 1100px;
+  --pad-inline: max(clamp(1rem, 4vw, 3rem), calc((100% - var(--measure)) / 2));
+  /* modular scale, ratio 1.6: headline = 1.6 × subheadline = 1.6² × body */
+  --ratio: 1.6;
+  --fs-body: 1rem;
+  --fs-sub: calc(var(--fs-body) * var(--ratio));   /* 1.6rem */
+  --fs-head: calc(var(--fs-sub) * var(--ratio));   /* 2.56rem */
+  --fs-hero: calc(var(--fs-head) * var(--ratio));  /* 4.096rem */
+  /* Press Start 2P reads far larger per px, so it gets its own 1.6 ladder */
+  --fp-body: 0.6875rem;
+  --fp-sub: calc(var(--fp-body) * var(--ratio));   /* 1.1rem */
+  --fp-head: calc(var(--fp-sub) * var(--ratio));   /* 1.76rem */
+  /* square size of the back-to-top button, kept in one place */
+  --to-top: 3.25rem;
 }
 
 html[data-theme="green"] {
@@ -37,6 +64,7 @@ html[data-mode="dark"] {
   --grid: rgba(236, 238, 230, 0.05);
   --dev: #3fd06a;
   --offsec: #ff5a45;
+  --logo-ink: #e9ece3;
 }
 html[data-mode="dark"][data-theme="green"] {
   --acc-text: #2fd95c;
@@ -51,7 +79,14 @@ html[data-mode="dark"][data-theme="red"] {
   --shadow: rgba(255, 60, 30, 0.45);
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* magnetic scrolling: the viewport is pulled to the nearest section edge.
+     Each section owns a screen at every width, so mandatory holds everywhere;
+     an oversized section (long FR strings, very short window) still scrolls
+     freely inside itself, and the footer stays a resting spot. */
+  scroll-snap-type: y mandatory;
+}
 
 body {
   font-family: var(--font-body);
@@ -83,18 +118,31 @@ header, main, footer { position: relative; z-index: 1; }
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  padding: 0.65rem clamp(1rem, 4vw, 3rem);
+  padding-block: 0.65rem;
+  padding-inline: var(--pad-inline);
   border-bottom: 3px solid var(--ink);
   background: var(--paper);
+  /* above main: both sit at z-index 1 and main comes later, which would
+     otherwise paint the open dropdown under the hero */
+  z-index: 4;
+  /* the hero is header-sized, so the first screen snaps at the document top */
+  scroll-snap-align: start;
 }
 
-.brand img { display: block; height: 52px; width: auto; }
+/* the wordmark is inline, so it paints with the palette currently in charge */
+.brand .logo { display: block; height: 52px; width: auto; }
+.logo-ink { fill: var(--logo-ink); }
+.logo-grad { fill: url(#logo-grad); }
+.logo-g1 { stop-color: var(--acc-deep); }
+.logo-g2 { stop-color: var(--acc); }
 
 .nav {
   display: flex;
-  gap: 1.5rem;
+  /* row-gap first value: wrapped nav lines on a phone */
+  gap: 0.5rem 1.5rem;
+  flex-wrap: wrap;
   font-family: var(--font-pixel);
-  font-size: 0.625rem;
+  font-size: var(--fp-chip);
 }
 .nav a {
   color: var(--ink);
@@ -105,7 +153,94 @@ header, main, footer { position: relative; z-index: 1; }
 .nav a:hover, .nav a:focus-visible {
   color: var(--acc-text);
   border-bottom-color: var(--acc);
-  background: repeating-linear-gradient(45deg, var(--soft) 0 2px, transparent 2px 6px);
+  background: var(--hatch);
+}
+
+/* ---------- services dropdown ---------- */
+.nav-item { position: relative; }
+/* the trigger is a control, not a nav link, so it wears the header's pixel
+   chip vocabulary: ink border like .mode-btn, offset shadow like .btn */
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 4px 4px 0 var(--ink);
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  font-size: var(--fp-chip);
+  transition: transform 140ms steps(2), box-shadow 140ms steps(2), background 140ms steps(2);
+}
+.nav-link:hover { background: var(--hatch); }
+.nav-link:focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
+/* open mirrors .mode-btn.is-on: the control is engaged */
+.nav-item.is-open .nav-link {
+  background: var(--acc);
+  color: #fff;
+  transform: none;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.nav-caret { width: 0.5rem; height: 0.5rem; transition: transform 140ms steps(2); }
+.nav-item.is-open .nav-caret { transform: rotate(180deg); }
+/* transparent bridge: crossing the gap keeps the pointer inside .nav-item */
+.nav-item::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: 100%;
+  height: 0.75rem;
+}
+.nav-drop {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  left: 0;
+  z-index: 4;
+  display: grid;
+  min-width: 16rem;
+  padding: 0.5rem;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 6px 6px 0 var(--ink);
+  gap: 0.25rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 120ms steps(2), transform 120ms steps(2), visibility 120ms;
+}
+.nav-item.is-open .nav-drop { opacity: 1; visibility: visible; transform: none; }
+/* each entry carries its track colour, the same --tc the sections use */
+.nav-drop a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.6rem;
+  border-bottom: 0;
+}
+.drop-mark {
+  flex: none;
+  width: 0.75rem; height: 0.75rem;
+  background: var(--tc);
+  outline: 2px solid var(--ink);
+}
+.nav-drop a:hover, .nav-drop a:focus-visible {
+  color: var(--tc);
+  background: var(--hatch);
+}
+/* narrow screens: the header is already stacked into rows, so a floating panel
+   would land on the mode buttons — give it a row of its own instead */
+@media (max-width: 720px) {
+  .nav-item { display: grid; justify-items: start; }
+  .nav-item::after { display: none; }
+  .nav-drop {
+    position: static;
+    display: none;
+    min-width: 0;
+    margin-top: 0.5rem;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .nav-item.is-open .nav-drop { display: grid; }
 }
 
 .modes { display: flex; gap: 0.75rem; flex-wrap: wrap; }
@@ -117,7 +252,7 @@ header, main, footer { position: relative; z-index: 1; }
 }
 .mode-btn {
   font-family: var(--font-pixel);
-  font-size: 0.5625rem;
+  font-size: var(--fp-micro);
   padding: 0.625rem 0.875rem;
   border: none;
   background: transparent;
@@ -134,7 +269,14 @@ header, main, footer { position: relative; z-index: 1; }
 /* ---------- hero ---------- */
 .hero {
   position: relative;
-  padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 3rem);
+  /* inline padding comes from the shared section column (main > section) */
+  padding-block: clamp(1.5rem, 5vw, 3rem);
+  /* first screen = header + hero, so the hero takes what the header leaves */
+  min-height: calc(100vh - var(--header-h));
+  min-height: calc(100svh - var(--header-h));
+  /* the header already anchors this screen; a second line here would let the
+     page rest with the header cut off */
+  scroll-snap-align: none;
   overflow: hidden;
 }
 
@@ -150,11 +292,13 @@ header, main, footer { position: relative; z-index: 1; }
 .dither.d1 { left: 0; color: var(--dev); }
 .dither.d2 { right: 0; color: var(--offsec); }
 
-.hero-copy { max-width: 880px; margin: 0 auto; }
+/* width:100% keeps the copy on its measure: inside the grid, auto margins alone
+   would shrink-wrap it to its widest line */
+.hero-copy { width: 100%; max-width: 55rem; margin-inline: auto; }
 
 .eyebrow {
   font-family: var(--font-pixel);
-  font-size: 0.6875rem;
+  font-size: var(--fp-body);
   color: var(--acc-text);
   margin-bottom: 0.75rem;
 }
@@ -163,21 +307,16 @@ header, main, footer { position: relative; z-index: 1; }
 .display .line {
   display: block;
   font-family: var(--font-term);
-  font-size: clamp(2.25rem, 6.5vw, 4.5rem);
+  font-size: clamp(2.25rem, 6.5vw, var(--fs-hero));
   letter-spacing: 0.02em;
 }
 .display .line.accent { color: var(--acc-text); }
-.display .line.small {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  color: var(--muted);
-  margin-top: 0.25rem;
-}
 
 .lede {
   max-width: 42ch;
   margin: 1rem 0 1.25rem;
   color: var(--muted);
-  font-size: 1.0625rem;
+  font-size: var(--fs-body);
 }
 
 /* terminal card */
@@ -205,7 +344,7 @@ header, main, footer { position: relative; z-index: 1; }
 .term-bar span {
   margin-left: 0.5rem;
   font-family: var(--font-pixel);
-  font-size: 0.5625rem;
+  font-size: var(--fp-micro);
   color: var(--muted);
 }
 .term-body {
@@ -227,7 +366,7 @@ header, main, footer { position: relative; z-index: 1; }
 .btn {
   display: inline-block;
   font-family: var(--font-pixel);
-  font-size: 0.625rem;
+  font-size: var(--fp-chip);
   text-decoration: none;
   color: #fff;
   background: var(--acc-deep);
@@ -235,155 +374,196 @@ header, main, footer { position: relative; z-index: 1; }
   padding: 0.875rem 1.125rem;
   box-shadow: 4px 4px 0 var(--ink);
 }
-.btn:hover, .btn:focus-visible {
+/* the one chip vocabulary: nav trigger, buttons, back-to-top all lift by the
+   same 2px and drop a deeper shadow, then land back on press */
+.nav-link:hover, .btn:hover, .btn:focus-visible, .to-top:hover, .to-top:focus-visible {
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 var(--ink);
-  background: var(--acc-text);
 }
-.btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.btn:hover, .btn:focus-visible, .to-top:hover, .to-top:focus-visible { background: var(--acc-text); }
+.btn:active, .to-top:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
 .btn.ghost { background: var(--paper); color: var(--ink); }
 .btn.ghost:hover { background: var(--soft); color: var(--acc-text); }
-.btn.big { font-size: 0.75rem; padding: 1rem 1.35rem; }
+/* the long email address must not push the page sideways on a phone */
+.btn.big {
+  font-size: clamp(var(--fp-micro), 3.4vw, 0.75rem);
+  padding: 1rem 1.35rem;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
 
 /* ---------- sections ---------- */
-main > section { padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1rem, 4vw, 3rem); }
+main > section {
+  padding-block: clamp(1.75rem, 4vw, 2.75rem);
+  padding-inline: var(--pad-inline);
+  /* minmax(0,...): the terminal's nowrap text would otherwise size the track
+     wider than the viewport and push the page sideways on small screens */
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
 main > section + section { border-top: 3px solid var(--ink); }
+/* the contact screen carries the footer too, so the last snap is the bottom
+   of the page rather than a half-step further down */
+main > section#contact {
+  min-height: calc(100vh - var(--footer-h));
+  min-height: calc(100svh - var(--footer-h));
+}
 
 .sec-label {
   font-family: var(--font-pixel);
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
+  /* floor at the subheadline rung so 28px pixel labels never break a phone */
+  font-size: clamp(var(--fp-sub), 7vw, var(--fp-head));
   margin-bottom: 0.75rem;
-}
-.tick {
-  width: 16px; height: 16px;
-  background: var(--acc);
-  outline: 3px solid var(--ink);
-  display: inline-block;
 }
 .sec-note { color: var(--muted); margin-bottom: 1.25rem; }
 
-/* ---------- service tracks ---------- */
-.tracks {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
-  gap: clamp(1.5rem, 4vw, 3rem);
-  max-width: 1100px;
-}
-
+/* ---------- the two tracks, one screen each ---------- */
 .track--dev    { --tc: var(--dev); }
 .track--offsec { --tc: var(--offsec); }
 
 .track-tag {
   font-family: var(--font-pixel);
-  font-size: 0.5625rem;
+  font-size: var(--fp-micro);
   color: var(--muted);
   margin-bottom: 0.5rem;
 }
-.track-title {
-  font-family: var(--font-pixel);
-  font-size: 0.9375rem;
+/* the track name is the section heading: own colour, underline hugging the text */
+.track--dev .sec-label, .track--offsec .sec-label,
+#about .sec-label {
   color: var(--tc);
   border-bottom: 4px solid var(--tc);
-  display: inline-block;
+  justify-self: start;
   padding-bottom: 0.4rem;
-  margin-bottom: 0.75rem;
 }
-.track-desc { color: var(--muted); margin-bottom: 1rem; }
 
-.cards { list-style: none; display: grid; gap: 0.75rem; }
+/* three across on a screen, one column on a phone */
+.cards {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 0.75rem;
+}
 
-.card {
+/* the pixel panel: the track cards and the profile chips are the same surface,
+   each section paints its edge through --tc */
+.card, .cred {
   border: 2px solid var(--ink);
   background: var(--paper);
   padding: 0.9rem;
   box-shadow: 6px 6px 0 var(--tc);
   transition: transform 120ms steps(2), box-shadow 120ms steps(2);
 }
-.card:hover {
+.card:hover, .cred:hover {
   transform: translate(-3px, -3px);
   box-shadow: 9px 9px 0 var(--tc);
 }
+/* the sprite paths carry no fill, so without this they render solid black */
+.icon { fill: currentColor; }
 .card .icon {
   width: 32px; height: 32px;
   color: var(--tc);
   margin-bottom: 0.5rem;
 }
-.card h4 {
+.card h4, .cred dt {
   font-family: var(--font-pixel);
-  font-size: 0.6875rem;
+  font-size: var(--fp-body);
   line-height: 1.5;
   margin-bottom: 0.5rem;
 }
-.card p { color: var(--muted); font-size: 0.9375rem; }
+.card p, .cred-main { color: var(--muted); font-size: var(--fs-body); }
 
-/* ---------- approach ---------- */
-.approach-punch {
-  font-family: var(--font-term);
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
-  color: var(--acc-text);
-  max-width: 26ch;
-  margin-bottom: 1.25rem;
-}
-
-.steps {
-  list-style: none;
+/* ---------- profile ---------- */
+/* --acc-text, the same green the section's chips and links already print with,
+   not the raw neon --acc */
+#about { --tc: var(--acc-text); }
+.creds {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: 0.75rem;
-  max-width: 1100px;
 }
-.step {
+.cred dd { margin: 0; }
+.cred-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.cred-chips a {
+  font-family: var(--font-pixel);
+  font-size: var(--fp-micro);
+  padding: 0.45rem 0.55rem;
   border: 2px solid var(--ink);
-  background: var(--paper);
-  padding: 0.9rem;
-  position: relative;
-}
-.step-n {
-  font-family: var(--font-pixel);
-  font-size: 0.9375rem;
+  background: var(--soft);
   color: var(--acc-text);
-  display: block;
-  margin-bottom: 0.5rem;
+  text-decoration: none;
 }
-.step h4 {
-  font-family: var(--font-pixel);
-  font-size: 0.6875rem;
-  margin-bottom: 0.5rem;
-}
-.step p { color: var(--muted); font-size: 0.9375rem; }
+.cred-chips a:hover, .cred-chips a:focus-visible { background: var(--ink); color: var(--paper); }
+.cred-main a { color: var(--acc-text); text-decoration: none; border-bottom: 2px solid var(--acc); }
+.cred-main a:hover, .cred-main a:focus-visible { color: var(--ink); background: var(--hatch); }
+.cred-main a.social-link { border-bottom: 0; display: inline-flex; padding: 0.15rem 0.35rem; }
+.cred-main a.social-link .icon { width: 1.6rem; height: 1.6rem; }
+.cred-main a.social-link:hover, .cred-main a.social-link:focus-visible { color: var(--acc); }
+.cred-sub { color: var(--muted); font-size: var(--fs-body); margin-top: 0.6rem; }
 
 /* ---------- contact ---------- */
 .contact-block {
   border: 3px solid var(--ink);
   background: repeating-linear-gradient(45deg, var(--soft) 0 4px, transparent 4px 12px), var(--paper);
   padding: clamp(1.25rem, 4vw, 2rem);
-  max-width: 1100px;
 }
 .contact-line {
   font-family: var(--font-term);
-  font-size: 1.75rem;
+  font-size: var(--fs-sub);
   margin-bottom: 1rem;
 }
 
 /* ---------- footer ---------- */
 footer {
   border-top: 3px solid var(--ink);
-  padding: 1rem;
+  /* room for the back-to-top square so it never lands on the footer text */
+  padding: 1rem calc(var(--to-top) + clamp(0.75rem, 3vw, 2rem) + 0.5rem);
   text-align: center;
   color: var(--muted);
   font-size: 0.875rem;
   background: var(--paper);
+  /* keeps the bottom of the page a resting spot when a section overflows */
+  scroll-snap-align: end;
 }
 .fx-dev { color: var(--dev); }
 .fx-offsec { color: var(--offsec); }
 
+/* ---------- back to top ---------- */
+.to-top {
+  position: fixed;
+  right: clamp(0.75rem, 3vw, 2rem);
+  bottom: clamp(0.75rem, 3vw, 2rem);
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: var(--to-top);
+  height: var(--to-top);
+  border: 2px solid var(--ink);
+  background: var(--acc-deep);
+  color: #fff;
+  box-shadow: 4px 4px 0 var(--ink);
+  /* hidden on the first screen; main.js toggles .is-on once the hero is gone.
+     the entrance offset uses `translate` so the shared chip `transform` lift
+     stays free for the hover state */
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 0.5rem;
+  transition: opacity 140ms steps(2), translate 140ms steps(2), transform 140ms steps(2), visibility 140ms;
+}
+.to-top.is-on { opacity: 1; visibility: visible; translate: none; }
+.to-top .icon { width: 1.5rem; height: 1.5rem; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .cursor { animation: none; }
-  .card, .card:hover { transition: none; transform: none; }
+  .card, .cred, .card:hover, .cred:hover { transition: none; transform: none; }
+  .to-top { transition: none; translate: none; }
+  .nav-drop, .nav-caret, .nav-link { transition: none; }
+  .nav-link:hover { transform: none; }
 }
 
 @media (max-width: 480px) {
